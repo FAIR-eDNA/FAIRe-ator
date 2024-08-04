@@ -1,2 +1,2 @@
-# template_generator
+# temp_generator
 eDNA metadata template generator
