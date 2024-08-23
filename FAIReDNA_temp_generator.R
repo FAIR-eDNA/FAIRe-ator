@@ -3,22 +3,20 @@
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 #### Instruction 
 
-### Step 1. Set working directory
-#i.e., 
-setwd("C:/Users/tak025/OneDrive - CSIRO/Documents/Miwa/IWY_eDNAdata/data_std/data_checklist/temp_generator")
+#1. Set working directory
 
-### Step 2: Save the input file in the directory
+#2: Save the input file in the directory
 # The current version is data_types_fig_eDNA_data_checklist_v4_20240716.xlsx 
 
-### Step 3: Read the eDNA_temp_gen_fun function 
+#3: Read the eDNA_temp_gen_fun function 
 
-### Step 4: Run the function 
+#4: Run the function 
 #i.e., eDNA_temp_gen_fun(req_lev = c('M', 'R'), sample_type = c('Water', 'Sediment'), detection_type='multispecies detection') 
 
 
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-eDNA_temp_gen_fun = function(input_file_name, req_lev, sample_type, detection_type) {
+eDNA_temp_gen_fun = function(req_lev, sample_type, detection_type) {
   # install packages
   packages <- c("readxl", "openxlsx", "RColorBrewer")
   for (i in packages) {
@@ -199,7 +197,7 @@ eDNA_temp_gen_fun = function(input_file_name, req_lev, sample_type, detection_ty
   #data_type='README'
   #addWorksheet(wb=wb, sheetName=data_type)
   
-  #### otu/amplification data ####
+  #### amplification data ####
   # TO DO
   
   #### DNA sequence data ####
