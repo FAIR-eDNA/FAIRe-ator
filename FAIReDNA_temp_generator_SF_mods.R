@@ -45,9 +45,7 @@ eDNA_temp_gen_fun = function(req_lev = c('M', 'R', 'O'),
   input_file_name <- "eDNA_data_checklist_v7_20241004.xlsx"
   #sheet_name <- "checklist" #changed in v7
   sheet_name <- "list_v7"
-  #data <- read_excel(input_file_name, sheet = sheet_name) #changed data object name because it is reserved in the utilities package and I was having issues testing.
-  
-  input <- read_excel(input_file_name, sheet = sheet_name)
+  input <- readxl::read_excel(input_file_name, sheet = sheet_name)
   
   # create a directory for output templates
   if(dir.exists(paths = "./template")){dir.create(paste('template', project_id, sep='_'))}
@@ -121,22 +119,21 @@ eDNA_temp_gen_fun = function(req_lev = c('M', 'R', 'O'),
   # Make list of terms to keep (row2keep) and terms to remove (row2rm) lists ------------------------------------------
 
   ## requirement_level
-  for (i in req_lev) {
-    #ls_temp <- grep(i, data$requirement_level_code) #this column appears to have been deleted. The line below is a temporary solution.
+  # requirement_level_code column appears to have been deleted in the checklist. The line below is a temporary solution.
     
     input <- input |> 
       dplyr::mutate(requirement_level_code = dplyr::recode(requirement_level, 
                                                            'Mandatory' = "M", 
                                                            'Recommended' = "R", 
-                                                           'Optional'= "O")) |> dplyr::glimpse()
+                                                           'Optional'= "O"))
     
-    ls_temp <- grep(i, input$requirement_level_code)
-    if (i == req_lev[1]) req_lev_row2keep <- ls_temp else req_lev_row2keep <- unique(c(req_lev_row2keep, ls_temp))
-  }
+    req_lev_row2keep <- grep(paste(req_lev, collapse = "|"),
+                                   input$requirement_level_code)
   
   ## detection_type
-  unique(input$section)
-  if (detection_type == 'targeted taxon detection') { #TO-DO: include option of whether sequencing was done to confirm species
+    #TO-DO: include option of whether sequencing was done to confirm species
+    
+  if (detection_type == 'targeted taxon detection') { 
     detect_type_row2rm <- which(input$section %in% c('Library preparation/sequencing', 'Bioinformatics', 'OTU/ASV'))
   } else if (detection_type == 'multi taxon detection') {
     detect_type_row2rm <- which(input$section == 'Targeted taxon detection')
