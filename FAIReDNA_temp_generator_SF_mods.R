@@ -9,34 +9,16 @@
 #' 
 #' Arguments
 #' 
-#' req_lev : 
-#' Requirement level(s) of each fields to include in the data template. Select one or more from "M", "R", and "O" (Mandatory, Recommended, and Optional, respectively) 
-#' Default is c("M", "R", "O")
+#' @req_lev Requirement level(s) of each fields to include in the data template. Select one or more from "M", "R", and "O" (Mandatory, Recommended, and Optional, respectively). Default is c("M", "R", "O")
+#' @sample_type A (list of) Sample type(s). Select one or more from "Water", "Soil", "Sediment", "Air", "HostAssociated", "MicrobialMatBiofilm", and "SymbiontAssociated", or "other". "other" will include all the sample-type-specific fields in the output. 
+#' @detection_type An approach applied to detect taxon/taxa. Select one "targeted taxon detection" (e.g., q/d PCR based detection) or "multi taxon detection" (e.g., metabarcoding)
+#' @project_id A brief, concise project identifier with no spaces or special characters. This ID will be used in data file names as 'project_id'.
+#' @assay_name A brief, concise assay name(s) with no spaces or special characters. This will be used in data file names as 'assay_name'. 
+#' @studyMetadata_user (optional) A user-defined field or list of fields that are not listed in the FAIR eDNA metadata checklist. These fields will be appended to the end of the studyMetadata.
+#' @sampleMetadata_user (optional) A user-defined field or list of fields that are not listed in the FAIR eDNA metadata checklist. These fields will be appended to the end of the sampleMetadata.
 #' 
-#' sample_type : 
-#' (A list of) Sample type(s). 
-#' Select one or more from "Water", "Soil", "Sediment", "Air", "HostAssociated", "MicrobialMatBiofilm", and "SymbiontAssociated", or "other". 
-#' "other" will include all the sample-type-specitic fields in the output. 
-#' 
-#' detection_type : 
-#' An approach applied to detect taxon/taxa. Select one "targeted taxon detection" (e.g., q/d PCR based detection) or "multi taxon detection" (e.g., metabarcoding)
-#' 
-#' project_id : 
-#' A brief, concise project identifier with no spaces or special characters. This ID will be used in data file names as 'project_id'.
-#' 
-#' assay_name : 
-#' A brief, concise assay name(s) with no spaces or special characters. This will be used in data file names as 'assay_name'. 
-#' 
-#' studyMetadata_user (optional) :
-#' A user-defined field or list of fields that are not listed in the FAIR eDNA metadata checklist. These fields will be appended to the end of the studyMetadata.
-#' 
-#' sampleMetadata_user (optional) :
-#' A user-defined field or list of fields that are not listed in the FAIR eDNA metadata checklist. These fields will be appended to the end of the sampleMetadata.
-#' 
-#' Example
+#' @examples
 #' eDNA_temp_gen_fun(req_lev = c('M', 'R', 'O'), sample_type = c('Water', 'Sediment'), detection_type='multi taxon detection', project_id = "gbr2022", assay_name = c("MiFish", "crust16S")) 
-
-#setwd("C:/Users/tak025/OneDrive - CSIRO/Documents/Miwa/IWY_eDNAdata/data_std/data_checklist/temp_generator")
 
 eDNA_temp_gen_fun = function(req_lev = c('M', 'R', 'O'), sample_type, detection_type, project_id, assay_name, 
                              studyMetadata_user = NULL, sampleMetadata_user = NULL) {
