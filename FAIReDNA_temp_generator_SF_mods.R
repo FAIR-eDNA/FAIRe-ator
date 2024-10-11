@@ -57,7 +57,7 @@ eDNA_temp_gen_fun = function(req_lev = c('M', 'R', 'O'),
                paste('detection_type =', detection_type),
                paste('req_lev =', paste(req_lev, collapse = ' | '))
                )
-  if (sample_type == 'other') {
+  if (any(sample_type == 'other')) {
     readme2 <- c(readme2, 
                  paste('sample_type =', paste(sample_type, collapse = ' | '), 
                        '(Note: this option provides sample-type-specific fields for ALL sample types)')
@@ -107,6 +107,7 @@ eDNA_temp_gen_fun = function(req_lev = c('M', 'R', 'O'),
   ### Make row2keep and row2rm lists
   ## requirement_level
   for (i in req_lev) {
+    #ls_temp <- grep(i, data$requirement_level_code) #this column appears to have been deleted
     ls_temp <- grep(i, data$requirement_level_code)
     if (i == req_lev[1]) req_lev_row2keep <- ls_temp else req_lev_row2keep <- unique(c(req_lev_row2keep, ls_temp))
   }
@@ -520,6 +521,7 @@ eDNA_temp_gen_fun = function(req_lev = c('M', 'R', 'O'),
 #Rachel's data
 eDNA_temp_gen_fun(req_lev=c('M', 'R', 'O'), sample_type=c('Water'), detection_type = 'multi taxon detection', 
                    project_id='verte_quadeloupe', assay_name = c("vert01", "tele01", "mamm01", "cetac"))
+
 eDNA_temp_gen_fun(sample_type=c('Water'), detection_type = 'multi taxon detection', 
                   project_id='verte_quadeloupe', assay_name = c("vert01", "tele01", "mamm01", "cetac"))
 
