@@ -48,16 +48,15 @@ eDNA_temp_gen_fun = function(req_lev = c('M', 'R', 'O'),
   data <- read_excel(input_file_name, sheet = sheet_name)
   
   # create a directory for output templates
-  dir.create(paste('template', project_id, sep='_'))
+  if(dir.exists(paths = "./template")){dir.create(paste('template', project_id, sep='_'))}
   
-
   # Make README -------------------------------------------------------------
   
     readme1 <- c('The templates were generated using the eDNA checklist version of;', 
                input_file_name, 
                '',
                'Date/Time generated;', 
-               format(Sys.time(), 
+               format(Sys.time(),
                       '%Y-%m-%dT%H:%M:%S'))
 
 
