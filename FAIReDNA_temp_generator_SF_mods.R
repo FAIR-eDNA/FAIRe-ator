@@ -18,10 +18,19 @@
 #' @sampleMetadata_user (optional) A user-defined field or list of fields that are not listed in the FAIR eDNA metadata checklist. These fields will be appended to the end of the sampleMetadata.
 #' 
 #' @examples
-#' eDNA_temp_gen_fun(req_lev = c('M', 'R', 'O'), sample_type = c('Water', 'Sediment'), detection_type='multi taxon detection', project_id = "gbr2022", assay_name = c("MiFish", "crust16S")) 
+#' eDNA_temp_gen_fun(req_lev = c('M', 'R', 'O'), 
+#'                   sample_type = c('Water', 'Sediment'), 
+#'                   detection_type='multi taxon detection', 
+#'                   project_id = "gbr2022", 
+#'                   assay_name = c("MiFish", "crust16S")) 
 
-eDNA_temp_gen_fun = function(req_lev = c('M', 'R', 'O'), sample_type, detection_type, project_id, assay_name, 
-                             studyMetadata_user = NULL, sampleMetadata_user = NULL) {
+eDNA_temp_gen_fun = function(req_lev = c('M', 'R', 'O'), 
+                             sample_type, 
+                             detection_type, 
+                             project_id, 
+                             assay_name, 
+                             studyMetadata_user = NULL, 
+                             sampleMetadata_user = NULL) {
   # install packages
   packages <- c("readxl", "openxlsx", "RColorBrewer")
   for (i in packages) {
@@ -32,7 +41,8 @@ eDNA_temp_gen_fun = function(req_lev = c('M', 'R', 'O'), sample_type, detection_
   }
   
   input_file_name <- "eDNA_data_checklist_v7_20241004.xlsx"
-  sheet_name <- "checklist"
+  #sheet_name <- "checklist" #changed in v7
+  sheet_name <- "list_v7"
   data <- read_excel(input_file_name, sheet = sheet_name)
   
   # create a directory for output templates
@@ -504,7 +514,9 @@ eDNA_temp_gen_fun = function(req_lev = c('M', 'R', 'O'), sample_type, detection_
 }
 
 
-##### Examples ####
+
+# Examples ----------------------------------------------------------------
+
 #Rachel's data
 eDNA_temp_gen_fun(req_lev=c('M', 'R', 'O'), sample_type=c('Water'), detection_type = 'multi taxon detection', 
                    project_id='verte_quadeloupe', assay_name = c("vert01", "tele01", "mamm01", "cetac"))
