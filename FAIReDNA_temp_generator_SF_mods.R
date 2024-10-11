@@ -3,7 +3,7 @@
 #' Instructions 
 #' 
 #' Step 1: Save the input file in the working directory
-#' The current version is data_types_fig_eDNA_data_checklist_v6_20240821.xlsx 
+#' The current version is data_types_fig_eDNA_data_checklist_v7_20241004.xlsx 
 #' 
 #' Step 2: Run the eDNA_temp_gen_fun function with the below arguments
 #' 
@@ -21,17 +21,19 @@
 #' eDNA_temp_gen_fun(req_lev = c('M', 'R', 'O'), 
 #'                   sample_type = c('Water', 'Sediment'), 
 #'                   detection_type='multi taxon detection', 
-#'                   project_id = "gbr2022", 
-#'                   assay_name = c("MiFish", "crust16S")) 
+#'                   project_id = 'gbr2022', 
+#'                   assay_name = c('MiFish', 'crust16S')) 
 
 eDNA_temp_gen_fun = function(req_lev = c('M', 'R', 'O'), 
                              sample_type, 
                              detection_type, 
                              project_id, 
                              assay_name, 
-                             studyMetadata_user = NULL, 
-                             sampleMetadata_user = NULL) {
-  # install packages
+                             studyMetadata_user = 'User Not Named', 
+                             sampleMetadata_user = 'User Not Named') {
+
+  # install packages --------------------------------------------------------
+  
   packages <- c("readxl", "openxlsx", "RColorBrewer")
   for (i in packages) {
     if (!require(i, character.only = TRUE)) {
@@ -39,7 +41,7 @@ eDNA_temp_gen_fun = function(req_lev = c('M', 'R', 'O'),
       library(i, character.only = TRUE)
     }
   }
-  
+
   input_file_name <- "eDNA_data_checklist_v7_20241004.xlsx"
   #sheet_name <- "checklist" #changed in v7
   sheet_name <- "list_v7"
@@ -48,66 +50,85 @@ eDNA_temp_gen_fun = function(req_lev = c('M', 'R', 'O'),
   # create a directory for output templates
   dir.create(paste('template', project_id, sep='_'))
   
-  #README
-  readme1 <- c('The templates were generated using the eDNA checklist version of;', input_file_name, '',
-               'Date/Time generated;', format(Sys.time(), '%Y-%m-%dT%H:%M:%S'))
-  readme2 <- c('The templates were generated based on the below arguments;',
-               paste('project_id =', project_id),
-               paste('assay_name =', paste(assay_name, collapse = ' | ')),
-               paste('detection_type =', detection_type),
-               paste('req_lev =', paste(req_lev, collapse = ' | '))
-               )
-  if (any(sample_type == 'other')) {
-    readme2 <- c(readme2, 
-                 paste('sample_type =', paste(sample_type, collapse = ' | '), 
-                       '(Note: this option provides sample-type-specific fields for ALL sample types)')
-    )
-  } else {
-    readme2 <- c(readme2, 
-                 paste('sample_type =', paste(sample_type, collapse = ' | '), 
-                       '(Note: this option provides sample-type-specific fields for the selected sample type(s))')
-    )
-  }
-  
-  if (!is.null(studyMetadata_user)) {
-    readme2 <- c(readme2, paste('studyMetadata_user =', paste(studyMetadata_user, collapse = ' | ')))
-  }
-  if (!is.null(sampleMetadata_user)) {
-    readme2 <- c(readme2, paste('sampleMetadata_user =', paste(sampleMetadata_user, collapse = ' | ')))
-  }
-  
-  readme3 <- c('Requirement levels;', 'M = Mandatory', 'R = Recommended', 'O = Optional')
-  
-  readme4 <- c('List of files;',
-               paste0('studyMetadata_', project_id),
-               paste0('sampleMetadata_', project_id)             
-  )
-  if (detection_type=='multi taxon detection') {
-    readme4=c(readme4,
-              paste('rawOTU', project_id, assay_name, '<library_id>', sep = '_'),
-              paste('otu', project_id, assay_name, '<library_id>', sep = '_'),
-              paste('dnaSeqData', project_id, assay_name, '<library_id>', sep = '_'),
-              'Note: rawOTU, otu and dnaSeqData should be produced for each assay_name and library_id',
-              'Note: <library_id> in the file names should match with library_id in your sampleMetadata'
-    )
-    
-  } else if (detection_type=='targeted taxon detection') {
-    readme4=c(readme4, 
-              paste('amplificationData', project_id, assay_name, sep = '_'),
-              'Note: amplificationData should be produced for each assay_name'
-    )
-  }
-  
-  
-  
-  readme.df=data.frame(c(readme1, '', readme2, '', readme3, '', readme4))
-  
-  write.table(readme.df, paste0('template_', project_id, '/README.txt'), row.names = F, col.names = F, quote = F)
 
-  ### Make row2keep and row2rm lists
+  # Make README -------------------------------------------------------------
+  
+    readme1 <- c('The templates were generated using the eDNA checklist version of;', 
+               input_file_name, 
+               '',
+               'Date/Time generated;', 
+               format(Sys.time(), 
+                      '%Y-%m-%dT%H:%M:%S'))
+
+
+  
+    readme2 <- c('The templates were generated based on the below arguments;',
+                 paste('project_id =', project_id),
+                 paste('assay_name =', paste(assay_name, collapse = ' | ')),
+                 paste('detection_type =', detection_type),
+                 paste('req_lev =', paste(req_lev, collapse = ' | '))
+                 )
+    
+    if (any(sample_type == 'other')) {
+      readme2 <- c(readme2, 
+                   paste('sample_type =', paste(sample_type, collapse = ' | '), 
+                         '(Note: this option provides sample-type-specific fields for ALL sample types)')
+      )
+    } else {
+      readme2 <- c(readme2, 
+                   paste('sample_type =', paste(sample_type, collapse = ' | '), 
+                         '(Note: this option provides sample-type-specific fields for the selected sample type(s))')
+      )
+    }
+    
+    if (!is.null(studyMetadata_user)) {
+      readme2 <- c(readme2, paste('studyMetadata_user =', paste(studyMetadata_user, collapse = ' | ')))
+    }
+    if (!is.null(sampleMetadata_user)) {
+      readme2 <- c(readme2, paste('sampleMetadata_user =', paste(sampleMetadata_user, collapse = ' | ')))
+    }
+    
+    readme3 <- c('Requirement levels;', 'M = Mandatory', 'R = Recommended', 'O = Optional')
+    
+    readme4 <- c('List of files;',
+                 paste0('studyMetadata_', project_id),
+                 paste0('sampleMetadata_', project_id)             
+    )
+    if (detection_type=='multi taxon detection') {
+      readme4=c(readme4,
+                paste('rawOTU', project_id, assay_name, '<library_id>', sep = '_'),
+                paste('otu', project_id, assay_name, '<library_id>', sep = '_'),
+                paste('dnaSeqData', project_id, assay_name, '<library_id>', sep = '_'),
+                'Note: rawOTU, otu and dnaSeqData should be produced for each assay_name and library_id',
+                'Note: <library_id> in the file names should match with library_id in your sampleMetadata'
+      )
+      
+    } else if (detection_type=='targeted taxon detection') {
+      readme4=c(readme4, 
+                paste('amplificationData', project_id, assay_name, sep = '_'),
+                'Note: amplificationData should be produced for each assay_name'
+      )
+    }
+    
+    
+    
+    readme.df=data.frame(c(readme1, '', readme2, '', readme3, '', readme4))
+    
+    write.table(readme.df, paste0('template_', project_id, '/README.txt'), row.names = F, col.names = F, quote = F)
+                                                                                                                   
+
+  # Make list of terms to keep (row2keep) and terms to remove (row2rm) lists ------------------------------------------
+
   ## requirement_level
   for (i in req_lev) {
-    #ls_temp <- grep(i, data$requirement_level_code) #this column appears to have been deleted
+    #ls_temp <- grep(i, data$requirement_level_code) #this column appears to have been deleted. The line below is a temporary solution.
+    
+    data <- data |> 
+      dplyr::mutate(requirement_level_code = dplyr::recode(requirement_level, 
+                                                           'Mandatory' = "M", 
+                                                           'Recommended' = "R", 
+                                                           'Optional'= "O")) |> dplyr::glimpse()
+    
     ls_temp <- grep(i, data$requirement_level_code)
     if (i == req_lev[1]) req_lev_row2keep <- ls_temp else req_lev_row2keep <- unique(c(req_lev_row2keep, ls_temp))
   }
@@ -121,18 +142,19 @@ eDNA_temp_gen_fun = function(req_lev = c('M', 'R', 'O'),
   } else if (detection_type == 'other') {
     detect_type_row2rm <- NA
   }
-  detect_type_row2rm
   
   ## sample_type
   samp_type_all=c("Water", "Soil", "Sediment", "Air", "HostAssociated", "MicrobialMatBiofilm", "SymbiontAssociated")
-  if (sample_type=='other') {
+  if (sample_type=='other') { #This isn't working for the same reason as above, it's a logical statement with length > 1
     samp_type_row2rm=NULL
   } else {
     (samp_type_row2rm <- which(rowSums(data[,sample_type]) == 0)) #remove rows that have 0 in all sample_type column
     data[samp_type_row2rm, sample_type] #all zero. good
   }
   
-  #### studyMetadata ####
+
+  # studyMetadata -----------------------------------------------------------
+
   data_type <- 'studyMetadata'
   data_type_row2keep <- grep(data_type, data$data_type)
   
