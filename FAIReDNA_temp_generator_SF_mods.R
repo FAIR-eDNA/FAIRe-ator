@@ -45,7 +45,9 @@ eDNA_temp_gen_fun = function(req_lev = c('M', 'R', 'O'),
   input_file_name <- "eDNA_data_checklist_v7_20241004.xlsx"
   #sheet_name <- "checklist" #changed in v7
   sheet_name <- "list_v7"
-  data <- read_excel(input_file_name, sheet = sheet_name)
+  #data <- read_excel(input_file_name, sheet = sheet_name) #changed data object name because it is reserved in the utilities package and I was having issues testing.
+  
+  input <- read_excel(input_file_name, sheet = sheet_name)
   
   # create a directory for output templates
   if(dir.exists(paths = "./template")){dir.create(paste('template', project_id, sep='_'))}
@@ -122,22 +124,22 @@ eDNA_temp_gen_fun = function(req_lev = c('M', 'R', 'O'),
   for (i in req_lev) {
     #ls_temp <- grep(i, data$requirement_level_code) #this column appears to have been deleted. The line below is a temporary solution.
     
-    data <- data |> 
+    input <- input |> 
       dplyr::mutate(requirement_level_code = dplyr::recode(requirement_level, 
                                                            'Mandatory' = "M", 
                                                            'Recommended' = "R", 
                                                            'Optional'= "O")) |> dplyr::glimpse()
     
-    ls_temp <- grep(i, data$requirement_level_code)
+    ls_temp <- grep(i, input$requirement_level_code)
     if (i == req_lev[1]) req_lev_row2keep <- ls_temp else req_lev_row2keep <- unique(c(req_lev_row2keep, ls_temp))
   }
   
   ## detection_type
-  unique(data$section)
+  unique(input$section)
   if (detection_type == 'targeted taxon detection') { #TO-DO: include option of whether sequencing was done to confirm species
-    detect_type_row2rm <- which(data$section %in% c('Library preparation/sequencing', 'Bioinformatics', 'OTU/ASV'))
+    detect_type_row2rm <- which(input$section %in% c('Library preparation/sequencing', 'Bioinformatics', 'OTU/ASV'))
   } else if (detection_type == 'multi taxon detection') {
-    detect_type_row2rm <- which(data$section == 'Targeted taxon detection')
+    detect_type_row2rm <- which(input$section == 'Targeted taxon detection')
   } else if (detection_type == 'other') {
     detect_type_row2rm <- NA
   }
@@ -147,23 +149,23 @@ eDNA_temp_gen_fun = function(req_lev = c('M', 'R', 'O'),
   if (sample_type=='other') { #This isn't working for the same reason as above, it's a logical statement with length > 1
     samp_type_row2rm=NULL
   } else {
-    (samp_type_row2rm <- which(rowSums(data[,sample_type]) == 0)) #remove rows that have 0 in all sample_type column
-    data[samp_type_row2rm, sample_type] #all zero. good
+    (samp_type_row2rm <- which(rowSums(input[,sample_type]) == 0)) #remove rows that have 0 in all sample_type column
+    input[samp_type_row2rm, sample_type] #all zero. good
   }
   
 
   # studyMetadata -----------------------------------------------------------
 
   data_type <- 'studyMetadata'
-  data_type_row2keep <- grep(data_type, data$data_type)
+  data_type_row2keep <- grep(data_type, input$data_type)
   
   ## Make a checklist that has only the specified data_type, req_lev, detection_type, and sample_type 
   intersect(data_type_row2keep, req_lev_row2keep) #list of rows that occur in both data_type_row2keep and req_lev_row2keep
   unique(c(samp_type_row2rm, detect_type_row2rm)) #list of rows that occur in either samp_type_row2rm or detect_type_row2rm
   (row2keep_ls <- setdiff(intersect(data_type_row2keep, req_lev_row2keep), unique(c(samp_type_row2rm, detect_type_row2rm)))) #take out the rows that are in *row2rm
   length(row2keep_ls)
-  data[samp_type_row2rm,]$requirement_level #There was no change with setdif() as all the samp_type_row2rm were optional
-  data_shortls <- data[row2keep_ls,]
+  input[samp_type_row2rm,]$requirement_level #There was no change with setdif() as all the samp_type_row2rm were optional
+  data_shortls <- input[row2keep_ls,]
   unique(data_shortls$data_type) #check if correct
   unique(data_shortls$requirement_level_code)#check if correct
   unique(data_shortls$section)#check if correct
@@ -284,7 +286,7 @@ eDNA_temp_gen_fun = function(req_lev = c('M', 'R', 'O'),
   
   #### sampleMetadata ####
   data_type <- 'sampleMetadata'
-  data_type_row2keep <- grep(data_type, data$data_type)
+  data_type_row2keep <- grep(data_type, input$data_type)
   
   ## Make a checklist that has only the specified data_type, req_lev, detection_type, and sample_type 
   intersect(data_type_row2keep, req_lev_row2keep) #list of rows that occur in both data_type_row2keep and req_lev_row2keep
@@ -292,7 +294,7 @@ eDNA_temp_gen_fun = function(req_lev = c('M', 'R', 'O'),
   (row2keep_ls <- setdiff(intersect(data_type_row2keep, req_lev_row2keep), unique(c(samp_type_row2rm, detect_type_row2rm)))) #take out the rows that are in *row2rm
   length(row2keep_ls)
   #data[samp_type_row2rm,]$requirement_level #There was no change with setdif() as all the samp_type_row2rm were optional
-  data_shortls <- data[row2keep_ls,]
+  data_shortls <- input[row2keep_ls,]
   unique(data_shortls$data_type) #check if correct
   unique(data_shortls$requirement_level_code)#check if correct
   unique(data_shortls$section)#check if correct
@@ -414,12 +416,12 @@ eDNA_temp_gen_fun = function(req_lev = c('M', 'R', 'O'),
   #### DNA sequence data ####
   if (detection_type == 'multi taxon detection') {
     data_type <- 'dnaSeqData' 
-    data_type_row2keep <- grep(data_type, data$data_type)
+    data_type_row2keep <- grep(data_type, input$data_type)
     
     ## Make a checklist that has only the specified data_type, req_lev and detection_type 
     row2keep_ls <- intersect(data_type_row2keep, req_lev_row2keep) #list of rows that occur in both data_type_row2keep and req_lev_row2keep
     length(row2keep_ls)
-    data_shortls <- data[row2keep_ls,]
+    data_shortls <- input[row2keep_ls,]
     unique(data_shortls$data_type) #check if correct
     unique(data_shortls$requirement_level_code)#check if correct
     unique(data_shortls$section)#check if correct
@@ -474,11 +476,11 @@ eDNA_temp_gen_fun = function(req_lev = c('M', 'R', 'O'),
   #### Amplification data ####
   if (detection_type == 'targeted taxon detection') {
     data_type <- 'amplificationData'
-    data_type_row2keep <- grep(data_type, data$data_type)
+    data_type_row2keep <- grep(data_type, input$data_type)
     ## Make a checklist that has only the specified data_type, req_lev and detection_type 
     row2keep_ls <- intersect(data_type_row2keep, req_lev_row2keep) #list of rows that occur in both data_type_row2keep and req_lev_row2keep
     length(row2keep_ls)
-    data_shortls <- data[row2keep_ls,]
+    data_shortls <- input[row2keep_ls,]
     unique(data_shortls$data_type) #check if correct
     unique(data_shortls$requirement_level_code)#check if correct
     unique(data_shortls$section)#check if correct
