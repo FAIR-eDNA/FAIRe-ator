@@ -63,15 +63,17 @@ eDNA_temp_gen_fun = function(req_lev = c('M', 'R', 'O'), sample_type, detection_
   dir.create(paste('template', project_id, sep='_'))
   
   #README
+  iso_current_time <- format(Sys.time(), "%Y-%m-%dT%H:%M:%S%z")
+  iso_current_time <- sub("(\\d{2})(\\d{2})$", "\\1:\\2", iso_current_time)
   readme1 <- c('The templates were generated using the eDNA checklist version of;', input_file_name, '',
-               'Date/Time generated;', format(Sys.time(), '%Y-%m-%dT%H:%M:%S'))
+               'Date/Time generated;', iso_current_time)
   readme2 <- c('The templates were generated based on the below arguments;',
                paste('project_id =', project_id),
                paste('assay_name =', paste(assay_name, collapse = ' | ')),
                paste('detection_type =', detection_type),
                paste('req_lev =', paste(req_lev, collapse = ' | '))
                )
-  if (sample_type == 'other') {
+  if (sample_type == 'other') { ### TO-DO: Error when there are more than one sample_type. Fix it. 
     readme2 <- c(readme2, 
                  paste('sample_type =', paste(sample_type, collapse = ' | '), 
                        '(Note: this option provides sample-type-specific fields for ALL sample types)')
@@ -207,17 +209,6 @@ eDNA_temp_gen_fun = function(req_lev = c('M', 'R', 'O'), sample_type, detection_
     user.df$section <- 'User defined'
     temp <- rbind(temp, user.df)
   }
-
-  ## Add req_lev full name for the first time appearing
-  if (any(temp$requirement_level_code == "M")) {
-    temp[grep('M', temp$requirement_level_code)[1], 'requirement_level_code'] = 'M=Mandatory'
-  }
-  if (any(temp$requirement_level_code == "R")) {
-    temp[grep('R', temp$requirement_level_code)[1], 'requirement_level_code'] = 'R=Recommended'
-  }
-  if (any(temp$requirement_level_code == "O")) {
-    temp[grep('O', temp$requirement_level_code)[1], 'requirement_level_code'] = 'O=Optional'
-  }
   
   wb <- createWorkbook() # create a excel workbook
   
@@ -246,19 +237,10 @@ eDNA_temp_gen_fun = function(req_lev = c('M', 'R', 'O'), sample_type, detection_
       if (!is.na(temp[i,j]) && temp[i,j] =='M') {
         addStyle(wb, sheet = data_type, style = createStyle(fgFill = "#FFCC00"), rows = i+1, cols = j, gridExpand = TRUE, stack = TRUE)
       }
-      if (!is.na(temp[i,j]) && temp[i,j] =='M=Mandatory') {
-        addStyle(wb, sheet = data_type, style = createStyle(fgFill = "#FFCC00"), rows = i+1, cols = j, gridExpand = TRUE, stack = TRUE)
-      }
       if (!is.na(temp[i,j]) && temp[i,j] =='R') {
         addStyle(wb, sheet = data_type, style = createStyle(fgFill = "#FFFF99"), rows = i+1, cols = j, gridExpand = TRUE, stack = TRUE)
       }
-      if (!is.na(temp[i,j]) && temp[i,j] =='R=Recommended') {
-        addStyle(wb, sheet = data_type, style = createStyle(fgFill = "#FFFF99"), rows = i+1, cols = j, gridExpand = TRUE, stack = TRUE)
-      }
       if (!is.na(temp[i,j]) && temp[i,j] =='O') {
-        addStyle(wb, sheet = data_type, style = createStyle(fgFill = "#CCFF99"), rows = i+1, cols = j, gridExpand = TRUE, stack = TRUE)
-      }
-      if (!is.na(temp[i,j]) && temp[i,j] =='O=Optional') {
         addStyle(wb, sheet = data_type, style = createStyle(fgFill = "#CCFF99"), rows = i+1, cols = j, gridExpand = TRUE, stack = TRUE)
       }
     }
@@ -330,17 +312,6 @@ eDNA_temp_gen_fun = function(req_lev = c('M', 'R', 'O'), sample_type, detection_
     temp2 <- cbind(temp2, user.df)
   }
   
-  ## Add req_lev full name for the first time appearing
-  if (any(temp2['requirement_level_code',] == "M")) {
-    temp2['requirement_level_code', grep('M', temp2['requirement_level_code',])[1]] = 'M=Mandatory'
-  }
-  if (any(temp2['requirement_level_code',] == "R")) {
-    temp2['requirement_level_code', grep('R', temp2['requirement_level_code',])[1]] = 'R=Recommended'
-  }
-  if (any(temp2['requirement_level_code',] == "O")) {
-    temp2['requirement_level_code', grep('O', temp2['requirement_level_code',])[1]] = 'O=Optional'
-  }
-
   wb <- createWorkbook() # create a excel workbook
   
   addWorksheet(wb=wb, sheetName=data_type)
@@ -366,23 +337,11 @@ eDNA_temp_gen_fun = function(req_lev = c('M', 'R', 'O'), sample_type, detection_
         addStyle(wb, sheet = data_type, style = createStyle(fgFill = "#FFCC00"), 
                  rows = i, cols = j, gridExpand = TRUE, stack = TRUE)
       }
-      if (!is.na(temp2[i,j]) && temp2[i,j] =='M=Mandatory') {
-        addStyle(wb, sheet = data_type, style = createStyle(fgFill = "#FFCC00"), 
-                 rows = i, cols = j, gridExpand = TRUE, stack = TRUE)
-      }
       if (!is.na(temp2[i,j]) && temp2[i,j] =='R') {
         addStyle(wb, sheet = data_type, style = createStyle(fgFill = "#FFFF99"), 
                  rows = i, cols = j, gridExpand = TRUE, stack = TRUE)
       }
-      if (!is.na(temp2[i,j]) && temp2[i,j] =='R=Recommended') {
-        addStyle(wb, sheet = data_type, style = createStyle(fgFill = "#FFFF99"), 
-                 rows = i, cols = j, gridExpand = TRUE, stack = TRUE)
-      }
       if (!is.na(temp2[i,j]) && temp2[i,j] =='O') {
-        addStyle(wb, sheet = data_type, style = createStyle(fgFill = "#CCFF99"), 
-                 rows = i, cols = j, gridExpand = TRUE, stack = TRUE)
-      }
-      if (!is.na(temp2[i,j]) && temp2[i,j] =='O=Optional') {
         addStyle(wb, sheet = data_type, style = createStyle(fgFill = "#CCFF99"), 
                  rows = i, cols = j, gridExpand = TRUE, stack = TRUE)
       }
