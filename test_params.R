@@ -1,6 +1,6 @@
 req_lev <- c('M', 'R', 'O')
 sample_type <- c('Water', 'Sediment')
-detection_type <- 'multi taxon detection'
+assay_type='metabarcoding'
 project_id <- 'TEST1234'
 assay_name <- c('MiFish', 'ABCD')
 studyMetadata_user <- NULL 
@@ -21,7 +21,7 @@ eDNA_temp_gen_fun(
 
 req_lev <- c('M')
 sample_type <- c('Water', 'Sediment', 'Air', 'Other')
-detection_type <- 'Targeted taxon detection'
+assay_type='targeted'
 project_id <- 'test2'
 assay_name <- c('MiFish', 'crust16S')
 studyMetadata_user <- NULL 

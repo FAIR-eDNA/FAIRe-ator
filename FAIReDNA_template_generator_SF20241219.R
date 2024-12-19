@@ -25,15 +25,14 @@
 #'                   project_id = 'gbr2022', 
 #'                   assay_name = c('MiFish', 'crust16S')) 
 
-setwd("~/Miwa/IWY_eDNAdata/data_std/FAIRe_template_generator")
 #TO-DO: include option of whether sequencing was done to confirm species
 eDNA_temp_gen_fun = function(req_lev = c('M', 'HR', 'R', 'O'), #MT: now there is HR 
                              sample_type, 
                              assay_type, 
                              project_id, 
                              assay_name, 
-                             studyMetadata_user = 'User Not Named',
-                             sampleMetadata_user = 'User Not Named') {
+                             studyMetadata_user = NULL,
+                             sampleMetadata_user = NULL) {
   
   # install packages --------------------------------------------------------
   
@@ -48,14 +47,12 @@ eDNA_temp_gen_fun = function(req_lev = c('M', 'HR', 'R', 'O'), #MT: now there is
   
   # set input and output ----------------------------------------------------
   
-  #input_file_name <- "ROutput/eDNA_data_checklist_v7_20241127.xlsx"
   FAIRe_checklist_ver <- 'v1.0'
   input_file_name <- paste0('FAIRe_checklist_', FAIRe_checklist_ver, ".xlsx")
   
   sheet_name <- paste0("checklist_", FAIRe_checklist_ver) 
   input <- readxl::read_excel(input_file_name, sheet = sheet_name)
   
-  #full_temp_file_name <- "ROutput/FAIRe_checklist_v1.0_FULLtemplate.xlsx"
   full_temp_file_name <- paste0("FAIRe_checklist_", FAIRe_checklist_ver, "_FULLtemplate.xlsx")
   
   
@@ -164,7 +161,7 @@ eDNA_temp_gen_fun = function(req_lev = c('M', 'HR', 'R', 'O'), #MT: now there is
   }
   
   # add studyMetadata_user
-  if (!paste(studyMetadata_user, collapse = '') == 'User Not Named') {
+  if (!is.null(studyMetadata_user)) {
     temp <- data.frame(matrix(nrow = length(studyMetadata_user), ncol = ncol(sheet_df)))
     colnames(temp) <- colnames(sheet_df)
     temp$term_name <- studyMetadata_user
