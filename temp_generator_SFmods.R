@@ -31,8 +31,8 @@ eDNA_temp_gen_fun = function(req_lev = c('M', 'R', 'O'),
                              detection_type, 
                              project_id, 
                              assay_name, 
-                             studyMetadata_user = 'User Not Named', 
-                             sampleMetadata_user = 'User Not Named') {
+                             studyMetadata_user = NULL, 
+                             sampleMetadata_user = NULL) {
   
   # install packages --------------------------------------------------------
   
@@ -47,19 +47,25 @@ eDNA_temp_gen_fun = function(req_lev = c('M', 'R', 'O'),
 
   # set input and output ----------------------------------------------------
 
-  input_file_name <- "eDNA_data_checklist_v7_20241004.xlsx"
-  
+  #input_file_name <- "eDNA_data_checklist_v7_20241004.xlsx"
   #sheet_name <- "checklist" #changed in v7
-  sheet_name <- "list_v7"
-  input <- readxl::read_excel(input_file_name, sheet = sheet_name) %>% 
-    dplyr::mutate(requirement_level_code = dplyr::recode(requirement_level, #This column wasn't in v7
-                                                         'Mandatory' = "M", 
-                                                         'Recommended' = "R", 
-                                                         'Optional'= "O")) %>% 
-    tidyr::separate_longer_delim(cols = data_type, delim = " | ") #This separates rows that are relevant for multiple data types
+  #sheet_name <- "list_v7"
+  # input <- readxl::read_excel(input_file_name, sheet = sheet_name) %>% 
+  #   dplyr::mutate(requirement_level_code = dplyr::recode(requirement_level, #This column wasn't in v7
+  #                                                        'Mandatory' = "M", 
+  #                                                        'Recommended' = "R", 
+  #                                                        'Optional'= "O")) %>% 
+  #   tidyr::separate_longer_delim(cols = data_type, delim = " | ") #This separates rows that are relevant for multiple data types
+  
+  t <- tempfile()
+  input_file_name <- googledrive::drive_get(id = "1RiJYCI-cSWRcCYJXLNSiFKgqfJslqKf_") %>% pull(name)
+  googledrive::drive_download(file = googledrive::as_id("1RiJYCI-cSWRcCYJXLNSiFKgqfJslqKf_"), path = t)
+  
+  input <- readxl::read_excel(t, sheet = "checklist") %>% 
+      tidyr::separate_longer_delim(cols = data_type, delim = " | ") #This separates rows that are relevant for multiple data types
   
   # create a directory for output templates
-  if(dir.exists(paths = "./template")){dir.create(paste('template', project_id, sep='_'))}
+  if(!dir.exists(paths = "./template")){dir.create(paste('template', project_id, sep='_'))}
   
   wb <- createWorkbook() # create a excel workbook
   
@@ -70,7 +76,7 @@ eDNA_temp_gen_fun = function(req_lev = c('M', 'R', 'O'),
                '',
                'Date/Time generated;', 
                format(Sys.time(),
-                      '%Y-%m-%dT%H:%M:%S'))
+                      '%Y-%m-%dT%H:%M:%S')) 
   
   
   
@@ -228,7 +234,9 @@ eDNA_temp_gen_fun = function(req_lev = c('M', 'R', 'O'),
   })
   
   for (i in assay_name) {
-    saveWorkbook(wb, paste0(Sys.Date(), '_tester_', project_id, '_', i, '_ENTER library_id HERE.xlsx'), overwrite = T)
+    saveWorkbook(wb, paste0(paste('template', project_id, sep='_'),
+                            "/",
+                            Sys.Date(), '_tester_', project_id, '_', i, '_ENTER library_id HERE.xlsx'), overwrite = T)
   }
   
 }
