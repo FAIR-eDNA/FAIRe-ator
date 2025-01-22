@@ -1,2 +1,2 @@
-# template_generator
-R function to generate FAIR eDNA metadata templates fit to users' purposes (e.g., sample type, detection type, requirement levels)
+# FAIRe-ator (FAIR eDNA template generator)
+This R function generates the FAIR eDNA metadata templates, customised to fit to users eDNA study designs (e.g., sample type, assay type).
