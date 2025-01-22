@@ -27,9 +27,6 @@
 #'                   project_id = 'gbr2022', 
 #'                   assay_name = c('MiFish', 'crust16S')) 
 
-setwd("~/Miwa/IWY_eDNAdata/data_std/FAIRe_template_generator")
-
-
 FAIReator = function(req_lev = c('M', 'HR', 'R', 'O'), #MT: now there is HR 
                              sample_type, 
                              assay_type, 
