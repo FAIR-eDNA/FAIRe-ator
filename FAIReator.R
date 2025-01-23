@@ -52,7 +52,9 @@ FAIReator = function(req_lev = c('M', 'HR', 'R', 'O'), #MT: now there is HR
   input_file_name <- paste0('FAIRe_checklist_', FAIRe_checklist_ver, ".xlsx")
   
   sheet_name <- 'checklist'
-  input <- readxl::read_excel(input_file_name, sheet = sheet_name)
+  input <- suppressMessages(
+    readxl::read_excel(input_file_name, sheet = sheet_name)
+    )
   
   full_temp_file_name <- paste0("FAIRe_checklist_", FAIRe_checklist_ver, "_FULLtemplate.xlsx")
   
@@ -150,7 +152,10 @@ FAIReator = function(req_lev = c('M', 'HR', 'R', 'O'), #MT: now there is HR
   
   # projectMetadata sheet  ------------------------------------------------
   sheet_name <- 'projectMetadata'
-  sheet_df <- readxl::read_excel(full_temp_file_name, sheet=sheet_name)
+  sheet_df <- suppressMessages(
+    readxl::read_excel(full_temp_file_name, sheet=sheet_name)
+  )
+  
   # remove sections from projectMetadata based on detection type
   section2rm <- if(assay_type == 'metabarcoding') {
     'Targeted assay detection'
@@ -175,7 +180,7 @@ FAIReator = function(req_lev = c('M', 'HR', 'R', 'O'), #MT: now there is HR
   }
   
   # add projectMetadata_user
-  if (!paste(projectMetadata_user, collapse = '') == 'User Not Named') {
+  if (!is.null(projectMetadata_user)) {
     temp <- data.frame(matrix(nrow = length(projectMetadata_user), ncol = ncol(sheet_df)))
     colnames(temp) <- colnames(sheet_df)
     temp$term_name <- projectMetadata_user
@@ -203,7 +208,10 @@ FAIReator = function(req_lev = c('M', 'HR', 'R', 'O'), #MT: now there is HR
   
   # sampleMetadata sheet  ------------------------------------------------
   sheet_name <- 'sampleMetadata'
-  sheet_df <- readxl::read_excel(full_temp_file_name, sheet=sheet_name, col_names = F)
+  sheet_df <- suppressMessages(
+    readxl::read_excel(full_temp_file_name, sheet=sheet_name, col_names = F)
+  )
+  
   # remove terms from sampleMetadata based on sample type
   samp_type_row2keep <- if(any(sample_type %>% tolower() == 'other')) {
     NA
@@ -241,7 +249,7 @@ FAIReator = function(req_lev = c('M', 'HR', 'R', 'O'), #MT: now there is HR
   }
   
   # add sampleMetadata_user
-  if (!paste(sampleMetadata_user, collapse = '') == 'User Not Named') {
+  if (!is.null(sampleMetadata_user)) {
     temp <- data.frame(matrix(nrow = nrow(sheet_df), ncol = length(sampleMetadata_user)))
     colnames(temp) <- sampleMetadata_user
     rownames(temp) <- rownames(sheet_df)
@@ -268,7 +276,9 @@ FAIReator = function(req_lev = c('M', 'HR', 'R', 'O'), #MT: now there is HR
   }
   
   for (sheet_name in sheet_ls) {
-    sheet_df <- readxl::read_excel(full_temp_file_name, sheet=sheet_name, col_names = F)
+    sheet_df <- suppressMessages(
+      readxl::read_excel(full_temp_file_name, sheet=sheet_name, col_names = F)
+    )
     # req_lev
     req_lev_row <- which(sheet_df[1,] == '# requirement_level_code')
     for (i in req_lev2rm) {
@@ -283,7 +293,9 @@ FAIReator = function(req_lev = c('M', 'HR', 'R', 'O'), #MT: now there is HR
   # add Drop-down values sheet  ------------------------------------------------
   sheet_name <- 'Drop-down values'
   addWorksheet(wb, sheet_name)
-  vocab_df <- readxl::read_excel(full_temp_file_name, sheet=sheet_name, col_names = T)
+  vocab_df <- suppressMessages(
+    readxl::read_excel(full_temp_file_name, sheet=sheet_name, col_names = T)
+  )
   
   if (assay_type == 'targeted' & length(assay_name) > 1) {
     filtered_row <- vocab_df[which(vocab_df$term_name == 'detected_notDetected'), ]
@@ -522,4 +534,8 @@ FAIReator = function(req_lev = c('M', 'HR', 'R', 'O'), #MT: now there is HR
                               paste0(Sys.Date(), '_', project_id, '.xlsx')
                               ), 
                overwrite = T)
+  
+  print(paste('Your templates are in', 
+              here::here(paste0('template_', project_id))
+  ))
 }
