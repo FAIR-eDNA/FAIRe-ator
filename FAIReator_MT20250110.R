@@ -37,7 +37,7 @@ FAIReator = function(req_lev = c('M', 'HR', 'R', 'O'), #MT: now there is HR
   
   # install packages --------------------------------------------------------
   
-  packages <- c("readxl", "openxlsx", "RColorBrewer", "dplyr") 
+  packages <- c("readxl", "openxlsx", "RColorBrewer", "dplyr", "here") 
   for (i in packages) {
     if (!require(i, character.only = TRUE)) {
       install.packages(i, dependencies = TRUE)
@@ -514,7 +514,10 @@ FAIReator = function(req_lev = c('M', 'HR', 'R', 'O'), #MT: now there is HR
     }
   }
   
-  saveWorkbook(wb, paste0('template_', project_id, '/',Sys.Date(), '_', project_id, '.xlsx'), overwrite = T)
+  saveWorkbook(wb, here::here(paste0('template_', project_id,),
+                              paste0(Sys.Date(), '_', project_id, '.xlsx')
+                              ), 
+               overwrite = T)
 }
 
 
