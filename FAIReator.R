@@ -32,8 +32,8 @@ FAIReator = function(req_lev = c('M', 'HR', 'R', 'O'), #MT: now there is HR
                              assay_type, 
                              project_id, 
                              assay_name, 
-                             projectMetadata_user = 'User Not Named',
-                             sampleMetadata_user = 'User Not Named') {
+                             projectMetadata_user = NULL,
+                             sampleMetadata_user = NULL) {
   
   # install packages --------------------------------------------------------
   
@@ -48,7 +48,6 @@ FAIReator = function(req_lev = c('M', 'HR', 'R', 'O'), #MT: now there is HR
   
   # set input and output ----------------------------------------------------
   
-  #input_file_name <- "ROutput/eDNA_data_checklist_v7_20241127.xlsx"
   FAIRe_checklist_ver <- 'v1.0'
   input_file_name <- paste0('FAIRe_checklist_', FAIRe_checklist_ver, ".xlsx")
   
