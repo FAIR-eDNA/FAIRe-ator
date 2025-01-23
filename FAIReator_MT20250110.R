@@ -524,6 +524,3 @@ FAIReator = function(req_lev = c('M', 'HR', 'R', 'O'), #MT: now there is HR
                               ), 
                overwrite = T)
 }
-
-
-
