@@ -130,11 +130,16 @@ FAIReator = function(req_lev = c('M', 'HR', 'R', 'O'), #MT: now there is HR
   writeData(wb, 'README', readme.df, colNames = F) 
   
   # Fill colours for requirement levels
-  req_col_df <- data.frame(matrix(nrow=4, ncol=3))
-  colnames(req_col_df) <- c('requirement_level', 'requirement_level_code', 'col')
-  req_col_df$requirement_level <- c("M = Mandatory", "HR = Highly recommended",  "R = Recommended", "O = Optional")
-  req_col_df$requirement_level_code <- c("M", "HR","R", "O")
-  req_col_df$col <- c("#E26B0A", "#FFCC00", "#FFFF99", "#CCFF99")
+  req_col_df <- tibble(
+    'requirement_level' = c(
+      "M = Mandatory",
+      "HR = Highly recommended",
+      "R = Recommended",
+      "O = Optional"
+    ),
+    'requirement_level_code' = c("M", "HR", "R", "O"),
+    'col' = c("#E26B0A", "#FFCC00", "#FFFF99", "#CCFF99")
+  )
   
   for (i in req_col_df$requirement_level_code) {
     addStyle(wb, sheet = 'README', 
