@@ -519,7 +519,7 @@ FAIReator = function(req_lev = c('M', 'HR', 'R', 'O'), #MT: now there is HR
     }
   }
   
-  saveWorkbook(wb, here::here(paste0('template_', project_id,),
+  saveWorkbook(wb, here::here(paste0('template_', project_id),
                               paste0(Sys.Date(), '_', project_id, '.xlsx')
                               ), 
                overwrite = T)
