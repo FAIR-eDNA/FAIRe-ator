@@ -8,6 +8,10 @@ To use this function, save the following two files in your R working directory:
 
 Download and source the `FAIReator.R` script to load the function into your R environment.
 
+```
+source('FAIReator.R')
+```
+
 The FAIReator function requires the following parameters:
 
 1. `req_lev` Requirement level(s) of each fields to include in the data template. Select one or more from "M", "R", and "O" (Mandatory, Recommended, and Optional, respectively). Default is c("M", "R", "O")
