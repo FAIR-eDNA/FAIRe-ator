@@ -39,3 +39,9 @@ FAIReator(
 )
                    
 ```
+
+The expected outputs are:
+
+- A new folder called "template_<project_id>" (e.g., template_gbr2022) in your working directory.
+- An Excel file called "<project_id>.xlsx" (e.g., gbr2022.xlsx) in the new template folder, containing multiple worksheets in the file, including README, projectMetadata, sampleMetadata and other assay_type specific tables (e.g., OTU table if assay_type = "metabarcoding")
+
