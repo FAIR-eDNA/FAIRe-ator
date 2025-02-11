@@ -7,12 +7,13 @@
 #' FAIRe_checklist_v1.0.xlsx
 #' FAIRe_checklist_v1.0_FULLtemplate.xlsx
 #' 
-#' Step 2: Run the FAIReator function with the below arguments
+#' STEP 2. Source the FAIReator.R script to load the function into your R environment.
+#'
+#' Step 3: Run the FAIReator function with the below arguments
 #' 
-#' We need to describe the expected output
 #' Arguments
 #' 
-#' @req_lev Requirement level(s) of each fields to include in the data template. Select one or more from "M", "R", and "O" (Mandatory, Recommended, and Optional, respectively). Default is c("M", "R", "O")
+#' @req_lev Requirement level(s) of each fields to include in the data template. Select one or more from "M", "HR", "R", and "O" (Mandatory, Highly recommended, Recommended, and Optional, respectively). Default is c("M", "HR", "R", "O")
 #' @sample_type A (list of) Sample type(s). Select one or more from "Water", "Soil", "Sediment", "Air", "HostAssociated", "MicrobialMatBiofilm", and "SymbiontAssociated", or "other". "other" will include all the sample-type-specific fields in the output. 
 #' @assay_type An approach applied to detect taxon/taxa. Select one "targeted" (e.g., q/d PCR based detection) or "metabarcoding" (e.g., metabarcoding)
 #' @project_id A brief, concise project identifier with no spaces or special characters. This ID will be used in data file names as 'project_id'.
@@ -21,13 +22,17 @@
 #' @sampleMetadata_user (optional) A user-defined field or list of fields that are not listed in the FAIR eDNA metadata checklist. These fields will be appended to the end of the sampleMetadata.
 #' 
 #' @examples
-#' FAIReator(req_lev = c('M', 'HR', 'R', 'O'), 
-#'                   sample_type = c('Water', 'Sediment'), 
+#' FAIReator(sample_type = c('Water', 'Sediment'), 
 #'                   assay_type='metabarcoding', 
 #'                   project_id = 'gbr2022', 
 #'                   assay_name = c('MiFish', 'crust16S')) 
+#'
+#'
+#' The expected outputs are:
+#' A new folder called "template_<project_id>" (e.g., template_gbr2022) in your working directory. 
+#' An Excel file called "<project_id>.xlsx" (e.g., gbr2022.xlsx) in the new template folder, containing multiple worksheets in the file, including README, projectMetadata, sampleMetadata and other assay_type specific tables (e.g., OTU table if assay_type = "metabarcoding")
 
-FAIReator = function(req_lev = c('M', 'HR', 'R', 'O'), #MT: now there is HR 
+FAIReator = function(req_lev = c('M', 'HR', 'R', 'O'), 
                              sample_type, 
                              assay_type, 
                              project_id, 
@@ -531,7 +536,7 @@ FAIReator = function(req_lev = c('M', 'HR', 'R', 'O'), #MT: now there is HR
   }
   
   saveWorkbook(wb, here::here(paste0('template_', project_id),
-                              paste0(Sys.Date(), '_', project_id, '.xlsx')
+                              paste0(project_id, '.xlsx')
                               ), 
                overwrite = T)
   
