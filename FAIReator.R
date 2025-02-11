@@ -534,13 +534,10 @@ FAIReator = function(req_lev = c('M', 'HR', 'R', 'O'),
       
     }
   }
-  
-  saveWorkbook(wb, here::here(paste0('template_', project_id),
-                              paste0(project_id, '.xlsx')
-                              ), 
+
+  saveWorkbook(wb, 
+               paste0('template_', project_id, '/', project_id, '.xlsx'), 
                overwrite = T)
-  
-  print(paste('Your templates are in', 
-              here::here(paste0('template_', project_id))
-  ))
+
+  print(paste0('Your templates are in ', getwd(), '/template_', project_id))
 }
