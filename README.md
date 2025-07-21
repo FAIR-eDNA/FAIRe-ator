@@ -45,6 +45,8 @@ FAIReator(
                    
 ```
 
+Note: Make sure the two input files are closed (not open in another program), otherwise the script will not run properly.
+
 The expected outputs are:
 
 - A new folder called "template_<project_id>" (e.g., template_gbr2022) in your working directory.
