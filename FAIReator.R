@@ -4,8 +4,8 @@
 #' Instructions 
 #' 
 #' Step 1: Save the input files in the working directory
-#' FAIRe_checklist_v1.0.xlsx
-#' FAIRe_checklist_v1.0_FULLtemplate.xlsx
+#' FAIRe_checklist_v1.0.2.xlsx
+#' FAIRe_checklist_v1.0.2_FULLtemplate.xlsx
 #' 
 #' STEP 2. Source the FAIReator.R script to load the function into your R environment.
 #'
@@ -53,7 +53,7 @@ FAIReator = function(req_lev = c('M', 'HR', 'R', 'O'),
   
   # set input and output ----------------------------------------------------
   
-  FAIRe_checklist_ver <- 'v1.0'
+  FAIRe_checklist_ver <- 'v1.0.2'
   input_file_name <- paste0('FAIRe_checklist_', FAIRe_checklist_ver, ".xlsx")
   
   sheet_name <- 'checklist'
