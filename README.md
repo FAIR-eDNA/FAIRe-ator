@@ -1,22 +1,14 @@
 # FAIRe-ator (FAIR eDNA template generator)
-This R function generates the FAIR eDNA metadata templates, customised to fit to users eDNA study designs (e.g., sample type, assay type, requirement level)
 
-**STEP 1.** Set your working directory in R. 
+This R function generates the FAIR eDNA metadata templates, customised to fit to
+users eDNA study designs (e.g., sample type, assay type, requirement level)
 
-
-**STEP 2.** Download input files (checklist and FULL template) and save them in your working directory.
-
-- [FAIRe_checklist_v1.0.2.xlsx](https://raw.githubusercontent.com/FAIR-eDNA/FAIRe_checklist/main/FAIRe_checklist_v1.0.2.xlsx)
-- [FAIRe_checklist_v1.0.2_FULLtemplate.xlsx](https://raw.githubusercontent.com/FAIR-eDNA/FAIRe_checklist/main/FAIRe_checklist_v1.0.2_FULLtemplate.xlsx)
-
-Note: Previous versions of the checklist, FULL templates, and change logs are available [here](https://github.com/FAIR-eDNA/FAIRe_checklist/tree/main)
-
-
-**STEP 3.** Source the `FAIReator.R` script to load the function into your R environment.
+# Install
 
 ```
-source("https://raw.githubusercontent.com/FAIR-eDNA/FAIRe-ator/refs/heads/main/FAIReator.R")
-
+library(devtools)
+install_github("https://github.com/FAIR-eDNA/FAIRe-ator")
+library(fairr)
 ```
 
 The FAIReator function requires the following parameters:
@@ -33,7 +25,7 @@ The three optional parameters are:
 1. `sampleMetadata_user` (optional) A user-defined field or list of fields that are not listed in the FAIR eDNA metadata checklist. These fields will be appended to the end of the sampleMetadata.
 
 
-**STEP 4.** Run the function, according to your needs. For example:
+Run the function, according to your needs. For example:
 
 ```
 FAIReator(
@@ -44,8 +36,6 @@ FAIReator(
 )
                    
 ```
-
-Note: Make sure the two input files are closed (not open in another program), otherwise the script will not run properly.
 
 The expected outputs are:
 
