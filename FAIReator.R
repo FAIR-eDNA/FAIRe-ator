@@ -1,13 +1,58 @@
+
+
+#' Get FAIRe version
+#'
+#' This function returns a string with the current FAIRe version number
+#'
+#' @return string with current version
+#' @examples
+#' get_current_FAIRe_version()
+#' 
+get_current_FAIRe_version <- function() {
+  return('v1.0.2')
+}
+
+
+#' Download FAIRe checklist
+#'
+#' This function downloads the necessary files to run the FAIReator script.
+#'
+#' @examples
+#' download_faire_checklist()
+#' 
+#' @export
+download_faire_checklist <- function() {
+  
+  url_repo <- "https://github.com/FAIR-eDNA/FAIRe_checklist/blob/main/"
+  
+  FAIRe_checklist_ver <- get_current_FAIRe_version()
+  
+  name_checklist <- paste0("FAIRe_checklist_", FAIRe_checklist_ver, ".xlsx")
+  name_template <- paste0("FAIRe_checklist_", FAIRe_checklist_ver, "_FULLtemplate.xlsx")
+  
+  if (file.exists(name_checklist)) {
+    message("Checklist with most recent version already exists")
+  } else {
+    download.file(url = paste0(url_repo, name_checklist), destfile = name_checklist)
+  }
+  
+  if (file.exists(name_template)) {
+    message("Template with most recent version already exists")
+  } else {
+    download.file(url = paste0(url_repo, name_template), destfile = name_template)
+  }
+
+}
+
+
 #' FAIR eDNA Template Generator (FAIRe-ator)
 #' This function is to generate FAIR eDNA data templates, based on the sample types, assay type, and requirement levels of your choice. 
 #'
 #' Instructions 
 #' 
-#' Step 1: Save the input files in the working directory
-#' FAIRe_checklist_v1.0.2.xlsx
-#' FAIRe_checklist_v1.0.2_FULLtemplate.xlsx
+#' STEP 1. Source the FAIReator.R script to load the function into your R environment.
 #' 
-#' STEP 2. Source the FAIReator.R script to load the function into your R environment.
+#' STEP 2. Download the templates
 #'
 #' Step 3: Run the FAIReator function with the below arguments
 #' 
@@ -53,7 +98,7 @@ FAIReator = function(req_lev = c('M', 'HR', 'R', 'O'),
   
   # set input and output ----------------------------------------------------
   
-  FAIRe_checklist_ver <- 'v1.0.2'
+  FAIRe_checklist_ver <- get_current_FAIRe_version()
   input_file_name <- paste0('FAIRe_checklist_', FAIRe_checklist_ver, ".xlsx")
   
   sheet_name <- 'checklist'
