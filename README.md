@@ -6,8 +6,18 @@ This R function generates the FAIR eDNA metadata templates, customised to fit to
 
 **STEP 2.** Download input files (checklist and FULL template) and save them in your working directory.
 
+**Option 1**: Manually download them via links below and save them in your working directory. 
 - [FAIRe_checklist_v1.0.2.xlsx](https://raw.githubusercontent.com/FAIR-eDNA/FAIRe_checklist/main/FAIRe_checklist_v1.0.2.xlsx)
 - [FAIRe_checklist_v1.0.2_FULLtemplate.xlsx](https://raw.githubusercontent.com/FAIR-eDNA/FAIRe_checklist/main/FAIRe_checklist_v1.0.2_FULLtemplate.xlsx)
+
+**Option 2**: Use the R download functions
+
+```
+source("https://raw.githubusercontent.com/FAIR-eDNA/FAIRe-r/main/download_faire_checklist.R")
+download_faire_checklist(FAIRe_checklist_ver = 'v1.0.2')
+source("https://raw.githubusercontent.com/FAIR-eDNA/FAIRe-r/main/download_faire_FULLtemplate.R")
+download_faire_FULLtemplate(FAIRe_checklist_ver = 'v1.0.2')
+```
 
 Note: Previous versions of the checklist, FULL templates, and change logs are available [here](https://github.com/FAIR-eDNA/FAIRe_checklist/tree/main)
 
