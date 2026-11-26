@@ -20,6 +20,7 @@
 #' @assay_name A brief, concise assay name(s) with no spaces or special characters. This will be used in data file names as 'assay_name'. 
 #' @projectMetadata_user (optional) A user-defined field or list of fields that are not listed in the FAIR eDNA metadata checklist. These fields will be appended to the end of the projectMetadata.
 #' @sampleMetadata_user (optional) A user-defined field or list of fields that are not listed in the FAIR eDNA metadata checklist. These fields will be appended to the end of the sampleMetadata.
+#' @experimentRunMetadata_user (optional) A user-defined field or list of fields that are not listed in the FAIR eDNA metadata checklist. These fields will be appended to the end of the experimentRunMetadata. Used only when assay_type = "metabarcoding", as only metabarcoding templates have an experimentRunMetadata.
 #' 
 #' @examples
 #' FAIReator(sample_type = c('Water', 'Sediment'), 
@@ -38,7 +39,8 @@ FAIReator = function(req_lev = c('M', 'HR', 'R', 'O'),
                              project_id, 
                              assay_name, 
                              projectMetadata_user = NULL,
-                             sampleMetadata_user = NULL) {
+                             sampleMetadata_user = NULL,
+                             experimentRunMetadata_user = NULL) {
   
   # install packages --------------------------------------------------------
   
@@ -101,6 +103,14 @@ FAIReator = function(req_lev = c('M', 'HR', 'R', 'O'),
   }
   if (!is.null(sampleMetadata_user)) {
     readme2 <- c(readme2, paste('sampleMetadata_user =', paste(sampleMetadata_user, collapse = ' | ')))
+  }
+  # experimentRunMetadata is made only for metabarcoding
+  if (!is.null(experimentRunMetadata_user) && assay_type != 'metabarcoding') {
+    message('experimentRunMetadata_user is not used: experimentRunMetadata is made only when assay_type = "metabarcoding"')
+    experimentRunMetadata_user <- NULL
+  }
+  if (!is.null(experimentRunMetadata_user)) {
+    readme2 <- c(readme2, paste('experimentRunMetadata_user =', paste(experimentRunMetadata_user, collapse = ' | ')))
   }
   
   readme3 <- c('Requirement levels;', 'M = Mandatory', 'HR = Highly recommended', 'R = Recommended', 'O = Optional')
@@ -291,6 +301,16 @@ FAIReator = function(req_lev = c('M', 'HR', 'R', 'O'),
         sheet_df <- sheet_df[,-which(sheet_df[req_lev_row,] == i)] 
       }
     }
+    # add experimentRunMetadata_user
+    if (sheet_name == 'experimentRunMetadata' & !is.null(experimentRunMetadata_user)) {
+      temp <- data.frame(matrix(nrow = nrow(sheet_df), ncol = length(experimentRunMetadata_user)))
+      colnames(temp) <- experimentRunMetadata_user
+      rownames(temp) <- rownames(sheet_df)
+      temp[which(sheet_df[,1] == 'samp_name'),] <- experimentRunMetadata_user
+      temp[which(sheet_df[,1] == '# section'),] <- 'User defined'
+      temp[which(sheet_df[,1] == '# requirement_level_code'),] <- 'O'
+      sheet_df <- cbind(sheet_df, temp)
+    }
     addWorksheet(wb, sheet_name)
     writeData(wb, sheet_name, sheet_df, colNames = F) 
   }
@@ -463,9 +483,16 @@ FAIReator = function(req_lev = c('M', 'HR', 'R', 'O'),
         }
       }
       
-      # comments
+      # comments (none for user-defined fields, which are not in the checklist)
+      user_fields <- if (sheet_name == 'sampleMetadata') {
+        sampleMetadata_user
+      } else if (sheet_name == 'experimentRunMetadata') {
+        experimentRunMetadata_user
+      } else {
+        NULL
+      }
       for (i in colnames(sheet_df)) {
-        if (!i %in% sampleMetadata_user) {
+        if (!i %in% user_fields) {
           req_lev_comm=input[which(input$term_name==i),]$requirement_level
           req_lev_cond=input[which(input$term_name==i),]$requirement_level_condition
           description=input[which(input$term_name==i),]$description
