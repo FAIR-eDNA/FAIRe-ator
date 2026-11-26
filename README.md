@@ -36,11 +36,12 @@ The FAIReator function requires the following parameters:
 1. `project_id` A brief, concise project identifier with no spaces or special characters. This ID will be used in data file names as 'project_id'.
 1. `assay_name` A brief, concise assay name(s) with no spaces or special characters. This will be used in data file names as 'assay_name'. 
 
-The three optional parameters are:
+The four optional parameters are:
 
 1. `req_lev` Requirement level(s) of each fields to include in the data template. Select one or more from "M", "HR", "R", and "O" (Mandatory, Highly recommended, Recommended, and Optional, respectively). Default is c("M", "HR", "R", "O").
 1. `projectMetadata_user` (optional) A user-defined field or list of fields that are not listed in the FAIR eDNA metadata checklist. These fields will be appended to the end of the projectMetadata.
 1. `sampleMetadata_user` (optional) A user-defined field or list of fields that are not listed in the FAIR eDNA metadata checklist. These fields will be appended to the end of the sampleMetadata.
+1. `experimentRunMetadata_user` (optional) A user-defined field or list of fields that are not listed in the FAIR eDNA metadata checklist. These fields will be appended to the end of the experimentRunMetadata. Used only when `assay_type = "metabarcoding"`, as only metabarcoding templates have an experimentRunMetadata.
 
 
 **STEP 4.** Run the function, according to your needs. For example:
